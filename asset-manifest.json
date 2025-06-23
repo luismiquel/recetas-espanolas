@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/recetas-espanolas/static/css/main.f855e6bc.css",
+    "main.js": "/recetas-espanolas/static/js/main.7fa9de38.js",
+    "static/js/453.b25ab179.chunk.js": "/recetas-espanolas/static/js/453.b25ab179.chunk.js",
+    "index.html": "/recetas-espanolas/index.html",
+    "main.f855e6bc.css.map": "/recetas-espanolas/static/css/main.f855e6bc.css.map",
+    "main.7fa9de38.js.map": "/recetas-espanolas/static/js/main.7fa9de38.js.map",
+    "453.b25ab179.chunk.js.map": "/recetas-espanolas/static/js/453.b25ab179.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.7fa9de38.js"
+  ]
+}
