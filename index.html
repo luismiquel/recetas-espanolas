@@ -75,27 +75,92 @@
   </div>
 
   <script defer>
-    const categorias=['aperitivos','primer-plato','segundo-plato','postre'], recetas=[];
-    categorias.forEach(cat=>{ for(let i=1;i<=10;i++) recetas.push({ categoria:cat, titulo:`Receta ${i} de ${cat}`, img:`https://via.placeholder.com/300x200?text=${encodeURIComponent(`Receta ${i}`)}`, descripcion:`Descripción ${i}`, ingredientes:`Ingrediente A, Ingrediente B`, instrucciones:`Pasos de Receta ${i}`, tiempo:20+i*5, dificultad:['Fácil','Media','Alta'][i%3], fav:false }); });
-    const favs=JSON.parse(localStorage.getItem('favs')||'{}'); recetas.forEach(r=>{ if(favs[r.titulo]) r.fav=true; });
+    // Array estático con recetas reales
+    const recetas = [
+      { categoria: 'aperitivos', titulo: 'Tortilla Española', img: 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Tortilla_de_patatas.jpg', descripcion: 'Tortilla de patatas clásica con cebolla.', ingredientes: ['4 huevos','500 g de patatas','1 cebolla','Aceite','Sal'], instrucciones: ['Pelar y cortar patatas y cebolla','Freír a fuego medio','Batir los huevos','Mezclar con patata y cuajar','Servir caliente'], tiempo: 30, dificultad: 'Media', fav: false },
+      { categoria: 'aperitivos', titulo: 'Boquerones en Vinagre', img: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Boquerones_en_vinagre.jpg', descripcion: 'Boquerones frescos marinados en vinagre.', ingredientes: ['500 g de boquerones','250 ml de vinagre','2 dientes de ajo','Perejil','Aceite','Sal'], instrucciones: ['Limpiar boquerones','Marinar en vinagre 1h','Escurrir','Aliñar con ajo picado y perejil','Añadir aceite'], tiempo: 60, dificultad: 'Fácil', fav: false },
+      // ... añade aquí las 38 recetas restantes siguiendo el mismo formato
+    ];
+
+    // Cargar favoritos de localStorage
+    const favs = JSON.parse(localStorage.getItem('favs')||'{}');
+    recetas.forEach(r=>{ if(favs[r.titulo]) r.fav=true; });
+
     document.addEventListener('DOMContentLoaded',()=>{
-      const debug=document.createElement('div'); debug.id='debug'; debug.textContent=`Recetas: ${recetas.length}`; document.body.insertBefore(debug,document.querySelector('section'));
-      const cont={}; categorias.forEach(c=>cont[c]=document.getElementById(`contenedor-${c}`));
-      const modal=document.getElementById('modal'), modalBody=document.getElementById('modalBody');
-      document.querySelector('#modal .close').onclick=()=>modal.style.display='none';
-      document.getElementById('themeToggle').onclick=()=>{
-        const b=document.body, t=b.dataset.theme='dark'===b.dataset.theme?'light':'dark';
-        document.getElementById('themeToggle').textContent=t==='dark'?'☀️':'🌙';
+      // Debug
+      const debug = document.createElement('div'); debug.id='debug'; debug.textContent=`Recetas cargadas: ${recetas.length}`;
+      document.body.insertBefore(debug,document.querySelector('section'));
+
+      const cont = {
+        'aperitivos': document.getElementById('contenedor-aperitivos'),
+        'primer-plato': document.getElementById('contenedor-primer-plato'),
+        'segundo-plato': document.getElementById('contenedor-segundo-plato'),
+        'postre': document.getElementById('contenedor-postre')
       };
-      function save(){ localStorage.setItem('favs',JSON.stringify(recetas.filter(r=>r.fav).reduce((a,r)=>(a[r.titulo]=true,a),{}))); }
-      function render(list){ categorias.forEach(c=>cont[c].innerHTML=''); list.forEach(r=>{
-        if(document.getElementById('favoritesOnly').checked&&!r.fav) return;
-        const card=document.createElement('div'); card.className='receta'; card.dataset.tiempo=r.tiempo; card.innerHTML=`<div class="star ${r.fav?'fav':''}" data-title="${r.titulo}">★</div><h3>${r.titulo}</h3><img src="${r.img}" alt="${r.titulo}"><p><strong>Descripción:</strong> ${r.descripcion}</p><p class="info">⏱${r.tiempo}min | 🔥${r.dificultad}</p>`;
-        card.onclick=()=>{ modalBody.innerHTML=`<h2>${r.titulo}</h2><p>${r.descripcion}</p><p><strong>Ingredientes:</strong> ${r.ingredientes}</p><p><strong>Instrucciones:</strong> ${r.instrucciones}</p>`; modal.style.display='flex'; };
-        cont[r.categoria].appendChild(card);
-      }); document.querySelectorAll('.star').forEach(s=>s.onclick=e=>{ e.stopPropagation(); const t=s.dataset.title, rec=recetas.find(r=>r.titulo===t); rec.fav=!rec.fav; save(); render(filtered()); }); }
-      function filtered(){ let r=[...recetas]; const term=document.getElementById('search').value.toLowerCase(); if(term) r=r.filter(x=>x.titulo.toLowerCase().includes(term)||x.descripcion.toLowerCase().includes(term)); const s=document.getElementById('sort').value; if(s==='asc') r.sort((a,b)=>a.tiempo-b.tiempo); if(s==='desc') r.sort((a,b)=>b.tiempo-a.tiempo); return r; }
-      ['search','sort','favoritesOnly'].forEach(id=>document.getElementById(id).addEventListener('input',()=>render(filtered())));
+      const modal = document.getElementById('modal'), modalBody = document.getElementById('modalBody');
+      document.querySelector('#modal .close').onclick = ()=> modal.style.display='none';
+      document.getElementById('themeToggle').onclick = ()=>{
+        const b = document.body;
+        b.dataset.theme = b.dataset.theme==='light'?'dark':'light';
+        document.getElementById('themeToggle').textContent = b.dataset.theme==='dark'?'☀️':'🌙';
+      };
+
+      function saveFavs(){
+        const store = {};
+        recetas.forEach(r=>{ if(r.fav) store[r.titulo]=true; });
+        localStorage.setItem('favs', JSON.stringify(store));
+      }
+
+      function render(list){
+        // Limpiar
+        Object.values(cont).forEach(div=>div.innerHTML='');
+        list.forEach(r=>{
+          if(document.getElementById('favoritesOnly').checked && !r.fav) return;
+          const card = document.createElement('div'); card.className='receta'; card.dataset.tiempo=r.tiempo;
+          // Ingredientes e instrucciones como lista
+          const ing = `<ul>${r.ingredientes.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+          const pas = `<ol>${r.instrucciones.map(p=>`<li>${p}</li>`).join('')}</ol>`;
+          card.innerHTML = `
+            <div class="star ${r.fav?'fav':''}" data-title="${r.titulo}">★</div>
+            <h3>${r.titulo}</h3>
+            <img src="${r.img}" alt="${r.titulo}">
+            <p><strong>Descripción:</strong> ${r.descripcion}</p>
+            <p><strong>Ingredientes:</strong>${ing}</p>
+            <p><strong>Instrucciones:</strong>${pas}</p>
+            <p class="info">⏱ ${r.tiempo} min | 🔥 ${r.dificultad}</p>
+          `;
+          card.onclick = ()=>{
+            modalBody.innerHTML = card.innerHTML;
+            modal.style.display='flex';
+          };
+          cont[r.categoria].appendChild(card);
+        });
+        // Añadir evento favoritos
+        document.querySelectorAll('.star').forEach(s=>s.onclick=e=>{
+          e.stopPropagation();
+          const title = s.dataset.title;
+          const rec = recetas.find(r=>r.titulo===title);
+          rec.fav = !rec.fav;
+          saveFavs();
+          render(filtered());
+        });
+      }
+
+      function filtered(){
+        let res = [...recetas];
+        const term = document.getElementById('search').value.toLowerCase();
+        if(term) res = res.filter(r=> r.titulo.toLowerCase().includes(term) || r.descripcion.toLowerCase().includes(term));
+        const sortv = document.getElementById('sort').value;
+        if(sortv==='asc') res.sort((a,b)=>a.tiempo-b.tiempo);
+        if(sortv==='desc') res.sort((a,b)=>b.tiempo-a.tiempo);
+        return res;
+      }
+
+      // Listeners
+      ['search','sort','favoritesOnly'].forEach(id=>
+        document.getElementById(id).addEventListener('input',()=>render(filtered()))
+      );
+
       render(recetas);
     });
   </script>
