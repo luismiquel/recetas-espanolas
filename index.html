@@ -27,6 +27,10 @@
     #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
     #modal .content { background:white; padding:2rem; border-radius:8px; max-width:500px; width:90%; position:relative; }
     #modal .close { position:absolute; top:10px; right:10px; cursor:pointer; font-size:1.5rem; }
+    #recipe-form { display: flex; flex-direction: column; gap: 1rem; max-width: 500px; margin: 0 auto; }
+    #recipe-form label { font-weight: bold; margin-top: 1rem; }
+    #recipe-form input, #recipe-form textarea, #recipe-form select { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; }
+    #recipe-form button { padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 1rem; }
   </style>
 </head>
 <body data-theme="light">
@@ -39,6 +43,7 @@
     <button class="tab-button" data-tab="primer-plato">Primer Plato</button>
     <button class="tab-button" data-tab="segundo-plato">Segundo Plato</button>
     <button class="tab-button" data-tab="postre">Postre</button>
+    <button class="tab-button" data-tab="add-recipe">Añadir Receta</button>
   </div>
   <div class="controls">
     <input type="text" id="search" placeholder="Buscar recetas...">
@@ -67,6 +72,37 @@
     <h2>🍮 Postre</h2>
     <div class="grid" id="contenedor-postre"></div>
   </section>
+  <section id="add-recipe">
+    <h2>📝 Añadir Nueva Receta</h2>
+    <form id="recipe-form">
+      <label for="titulo">Título:</label>
+      <input type="text" id="titulo" name="titulo" required>
+      <label for="img">URL de la Imagen:</label>
+      <input type="text" id="img" name="img" required>
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion" required></textarea>
+      <label for="categoria">Categoría:</label>
+      <select id="categoria" name="categoria" required>
+        <option value="aperitivos">Aperitivos</option>
+        <option value="primer-plato">Primer Plato</option>
+        <option value="segundo-plato">Segundo Plato</option>
+        <option value="postre">Postre</option>
+      </select>
+      <label for="ingredientes">Ingredientes (separados por comas):</label>
+      <input type="text" id="ingredientes" name="ingredientes" required>
+      <label for="instrucciones">Instrucciones (separadas por comas):</label>
+      <input type="text" id="instrucciones" name="instrucciones" required>
+      <label for="tiempo">Tiempo (minutos):</label>
+      <input type="number" id="tiempo" name="tiempo" required>
+      <label for="dificultad">Dificultad:</label>
+      <select id="dificultad" name="dificultad" required>
+        <option value="Fácil">Fácil</option>
+        <option value="Media">Media</option>
+        <option value="Difícil">Difícil</option>
+      </select>
+      <button type="submit">Añadir Receta</button>
+    </form>
+  </section>
 
   <div id="modal">
     <div class="content">
@@ -77,15 +113,17 @@
 
   <script src="recetas.js" defer></script>
   <script defer>
-    // Ahora, el array 'recetas' está disponible porque lo enlazamos arriba
+    let allRecetas = [];
+    const favs = JSON.parse(localStorage.getItem('favs') || '{}');
     
-    // Cargar favoritos de localStorage
-    const favs = JSON.parse(localStorage.getItem('favs')||'{}');
-    recetas.forEach(r=>{ if(favs[r.titulo]) r.fav=true; });
+    document.addEventListener('DOMContentLoaded', () => {
+      // Combina las recetas estáticas con las del usuario al inicio
+      const userRecetas = JSON.parse(localStorage.getItem('userRecetas') || '[]');
+      allRecetas = [...recetas, ...userRecetas];
+      allRecetas.forEach(r => { if (favs[r.titulo]) r.fav = true; });
 
-    document.addEventListener('DOMContentLoaded',()=>{
-      const debug = document.createElement('div'); debug.id='debug'; debug.textContent=`Recetas cargadas: ${recetas.length}`;
-      document.body.insertBefore(debug,document.querySelector('.tabs'));
+      const debug = document.createElement('div'); debug.id = 'debug'; debug.textContent = `Recetas cargadas: ${allRecetas.length}`;
+      document.body.insertBefore(debug, document.querySelector('.tabs'));
 
       const cont = {
         'aperitivos': document.getElementById('contenedor-aperitivos'),
@@ -94,33 +132,38 @@
         'postre': document.getElementById('contenedor-postre')
       };
       const modal = document.getElementById('modal'), modalBody = document.getElementById('modalBody');
-      document.querySelector('#modal .close').onclick = ()=> modal.style.display='none';
-      document.getElementById('themeToggle').onclick = ()=>{
+      document.querySelector('#modal .close').onclick = () => modal.style.display = 'none';
+      document.getElementById('themeToggle').onclick = () => {
         const b = document.body;
-        b.dataset.theme = b.dataset.theme==='light'?'dark':'light';
-        document.getElementById('themeToggle').textContent = b.dataset.theme==='dark'?'☀️':'🌙';
+        b.dataset.theme = b.dataset.theme === 'light' ? 'dark' : 'light';
+        document.getElementById('themeToggle').textContent = b.dataset.theme === 'dark' ? '☀️' : '🌙';
       };
 
-      function saveFavs(){
+      function saveFavs() {
         const store = {};
-        recetas.forEach(r=>{ if(r.fav) store[r.titulo]=true; });
+        allRecetas.forEach(r => { if (r.fav) store[r.titulo] = true; });
         localStorage.setItem('favs', JSON.stringify(store));
       }
 
-      function handleFavClick(e){
+      function handleFavClick(e) {
         e.stopPropagation();
         const card = e.currentTarget.closest('.receta');
         const title = card.dataset.title;
-        const rec = recetas.find(r=>r.titulo===title);
-        rec.fav = !rec.fav;
-        saveFavs();
-        render();
+        const rec = allRecetas.find(r => r.titulo === title);
+        if (rec) {
+          rec.fav = !rec.fav;
+          saveFavs();
+          render();
+        }
       }
-      
+
       const allCards = [];
 
       function createAllCards() {
-        recetas.forEach(receta => {
+        allCards.length = 0; // Limpiar el array para recrear las tarjetas
+        Object.values(cont).forEach(div => div.innerHTML = ''); // Limpiar los contenedores
+        
+        allRecetas.forEach(receta => {
           const card = document.createElement('div');
           card.className = 'receta';
           card.dataset.tiempo = receta.tiempo;
@@ -165,7 +208,7 @@
         let visibleCards = [...allCards];
 
         if (favsOnly) {
-          visibleCards = visibleCards.filter(card => recetas.find(r => r.titulo === card.dataset.title).fav);
+          visibleCards = visibleCards.filter(card => allRecetas.find(r => r.titulo === card.dataset.title).fav);
         }
 
         if (term) {
@@ -199,8 +242,8 @@
         render();
       }
 
-      ['search','sort','favoritesOnly'].forEach(id=>
-        document.getElementById(id).addEventListener('input',render)
+      ['search', 'sort', 'favoritesOnly'].forEach(id =>
+        document.getElementById(id).addEventListener('input', render)
       );
 
       document.querySelectorAll('.tab-button').forEach(button => {
@@ -208,6 +251,35 @@
           showTab(button.dataset.tab);
         });
       });
+
+      // Lógica para guardar las nuevas recetas
+      const recipeForm = document.getElementById('recipe-form');
+      recipeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const newRecipe = {
+          categoria: document.getElementById('categoria').value,
+          titulo: document.getElementById('titulo').value,
+          img: document.getElementById('img').value,
+          descripcion: document.getElementById('descripcion').value,
+          ingredientes: document.getElementById('ingredientes').value.split(',').map(s => s.trim()),
+          instrucciones: document.getElementById('instrucciones').value.split(',').map(s => s.trim()),
+          tiempo: parseInt(document.getElementById('tiempo').value),
+          dificultad: document.getElementById('dificultad').value,
+          fav: false
+        };
+
+        allRecetas.push(newRecipe);
+        saveUserRecetas(); // Función para guardar en localStorage
+        createAllCards();
+        showTab(newRecipe.categoria);
+        recipeForm.reset();
+      });
+
+      function saveUserRecetas() {
+        const userRecetas = allRecetas.filter(r => !r.isStatic);
+        localStorage.setItem('userRecetas', JSON.stringify(userRecetas));
+      }
 
       createAllCards();
       render();
