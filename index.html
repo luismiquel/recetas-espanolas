@@ -188,7 +188,7 @@
       { categoria: 'primer-plato', titulo: 'Migas Extremeñas', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Migas_extreme%C3%B1as.jpg/800px-Migas_extreme%C3%B1as.jpg', descripcion: 'Plato rural con pan, ajo, chorizo y pimiento frito.', ingredientes: ['1 pan de pueblo','200 g de panceta','1 chorizo','Pimientos verdes','Ajos','Aceite','Sal'], instrucciones: ['Humedecer el pan y dejar reposar','Sofreír el ajo, panceta, chorizo y pimientos','Añadir el pan desmigado y cocinar removiendo'], tiempo: 60, dificultad: 'Media', fav: false },
       { categoria: 'primer-plato', titulo: 'Ensalada de Tomate con Ventresca', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Ensalada_de_tomate_con_ventresca.jpg/800px-Ensalada_de_tomate_con_ventresca.jpg', descripcion: 'Ensalada simple y fresca con tomate, cebolla, ventresca y aceite de oliva.', ingredientes: ['4 tomates maduros','1 cebolleta','1 lata de ventresca','Aceite de oliva','Sal'], instrucciones: ['Cortar los tomates en rodajas y la cebolla en juliana','Disponer en un plato','Colocar la ventresca encima','Aliñar con aceite y sal'], tiempo: 10, dificultad: 'Fácil', fav: false },
       { categoria: 'primer-plato', titulo: 'Cocido Madrileño', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Cocido_madrile%C3%B1o_en_tres_vuelcos.jpg/800px-Cocido_madrile%C3%B1o_en_tres_vuelcos.jpg', descripcion: 'Guiso de garbanzos con verduras, carne y embutidos.', ingredientes: ['500 g de garbanzos','Morcillo','Chorizo','Morcilla','Tocino','Gallina','Zanahorias','Patatas','Repollo'], instrucciones: ['Remojar los garbanzos','Cocer las carnes con los garbanzos','Añadir las verduras','Servir en tres vuelcos: sopa, garbanzos y verduras, y carnes'], tiempo: 240, dificultad: 'Difícil', fav: false },
-      { categoria: 'primer-plato', titulo: 'Sopa de Pescado y Marisco', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Sopa_de_pescado_y_marisco.jpg/800px-Sopa_de_pescado_y_marisco.jpg', descripcion: 'Sopa marinera con trozos de pescado y marisco.', ingredientes: ['500 g de pescado','200 g de gambas','1 calamar','1 cebolla','2 dientes de ajo','Tomate frito','Pan duro','Caldo de pescado','Pimentón'], instrucciones: ['Sofreír el ajo y la cebolla','Añadir el calamar y el pescado','Incorporar el tomate, el pimentón y el caldo','Cocer, triturar parte del pan y añadir las gambas'], tiempo: 60, dificultad: 'Media', fav: false },
+      { categoria: 'primer-plato', titulo: 'Sopa de Pescado y Marisco', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Sopa_de_pescado_y_marisco.jpg/800px-Sopa_de_pescado_y_marisco.jpg', descripcion: 'Sopa marinera con trozos de pescado y marisco.', ingredientes: ['500 g de pescado','200 g de gambas','1 calamar','1 cebolla','2 dientes de ajo','Tomate triturado','Pan duro','Caldo de pescado','Pimentón'], instrucciones: ['Sofreír el ajo y la cebolla','Añadir el calamar y el pescado','Incorporar el tomate, el pimentón y el caldo','Cocer, triturar parte del pan y añadir las gambas'], tiempo: 60, dificultad: 'Media', fav: false },
       { categoria: 'primer-plato', titulo: 'Crema de Marisco', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Crema_de_marisco.jpg/800px-Crema_de_marisco.jpg', descripcion: 'Crema fina y elegante de marisco, ideal para celebraciones.', ingredientes: ['500 g de marisco (gambas, langostinos)','1 cebolla','2 puerros','2 tomates','Brandy','Caldo de pescado','Nata','Arroz'], instrucciones: ['Sofreír las verduras','Añadir el marisco y flambeado con brandy','Añadir el arroz y el caldo','Triturar y pasar por un chino','Servir con un toque de nata'], tiempo: 60, dificultad: 'Media', fav: false },
       { categoria: 'segundo-plato', titulo: 'Paella Valenciana', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Paella_de_marisco.jpg/800px-Paella_de_marisco.jpg', descripcion: 'El plato español por excelencia, con pollo, conejo y verduras.', ingredientes: ['400 g de arroz redondo','Pollo','Conejo','Judías verdes','Garrofón','Tomate triturado','Azafrán','Aceite','Caldo'], instrucciones: ['Sofreír el pollo y el conejo','Añadir las verduras y el tomate','Incorporar el arroz, el azafrán y el caldo','Cocinar hasta que el arroz esté en su punto'], tiempo: 90, dificultad: 'Difícil', fav: false },
       { categoria: 'segundo-plato', titulo: 'Cochinillo Asado', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Cochinillo_segoviano.jpg/800px-Cochinillo_segoviano.jpg', descripcion: 'Asado de cochinillo con la piel crujiente.', ingredientes: ['1 cochinillo','Sal','Agua','Manteca de cerdo'], instrucciones: ['Salpimentar el cochinillo','Hornear a fuego lento con la piel hacia arriba','Subir la temperatura al final para que la piel se dore'], tiempo: 180, dificultad: 'Difícil', fav: false },
@@ -339,14 +339,20 @@
             <h3>${receta.titulo}</h3>
             <img src="${receta.img}" alt="${receta.titulo}">
             <p><strong>Descripción:</strong> ${receta.descripcion}</p>
-            <p><strong>Ingredientes:</strong>${ing}</p>
-            <p><strong>Instrucciones:</strong>${pas}</p>
             <p class="info">⏱ ${receta.tiempo} min | 🔥 ${receta.dificultad}</p>
             ${receta.isUserAdded ? `<div class="receta-actions"><button class="delete-btn">Borrar</button></div>` : ''}
           `;
           
           card.onclick = () => {
-            modalBody.innerHTML = card.innerHTML;
+            modalBody.innerHTML = `
+                <span class="close" onclick="modal.style.display='none'">&times;</span>
+                <h3>${receta.titulo}</h3>
+                <img src="${receta.img}" alt="${receta.titulo}">
+                <p><strong>Descripción:</strong> ${receta.descripcion}</p>
+                <p class="info">⏱ ${receta.tiempo} min | 🔥 ${receta.dificultad}</p>
+                <p><strong>Ingredientes:</strong></p>${ing}
+                <p><strong>Instrucciones:</strong></p>${pas}
+            `;
             modal.style.display = 'flex';
             const modalStar = modalBody.querySelector('.star');
             if (modalStar) modalStar.onclick = handleFavClick;
@@ -471,6 +477,9 @@
           const dailyRecipe = recetasEstaticas[randomIndex];
           const container = document.getElementById('contenedor-receta-del-dia');
           container.innerHTML = '';
+
+          const ing = `<ul>${dailyRecipe.ingredientes.map(i => `<li>${i}</li>`).join('')}</ul>`;
+          const pas = `<ol>${dailyRecipe.instrucciones.map(p => `<li>${p}</li>`).join('')}</ol>`;
           
           const card = document.createElement('div');
           card.className = 'receta';
@@ -479,6 +488,8 @@
               <img src="${dailyRecipe.img}" alt="${dailyRecipe.titulo}">
               <p><strong>Descripción:</strong> ${dailyRecipe.descripcion}</p>
               <p class="info">⏱ ${dailyRecipe.tiempo} min | 🔥 ${dailyRecipe.dificultad}</p>
+              <p><strong>Ingredientes:</strong></p>${ing}
+              <p><strong>Instrucciones:</strong></p>${pas}
           `;
           container.appendChild(card);
       }
