@@ -21,7 +21,7 @@
     .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap:1rem; margin-top:1rem; }
     .receta { position:relative; background:var(--bg); border-radius:8px; padding:1rem; box-shadow:0 2px 5px rgba(0,0,0,0.1); cursor:pointer; }
     .receta img { width:100%; border-radius:8px; }
-    .info { font-size:.9rem; color:var(--fg); margin-top:.5rem; }
+    .info { font-size:1rem; font-weight:bold; color:var(--fg); margin-top:.5rem; }
     .star { position:absolute; top:8px; right:8px; font-size:1.5rem; cursor:pointer; color:#ccc; }
     .star.fav { color:#e74c3c; }
     #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
@@ -31,6 +31,26 @@
     #recipe-form label { font-weight: bold; margin-top: 1rem; }
     #recipe-form input, #recipe-form textarea, #recipe-form select { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; }
     #recipe-form button { padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 1rem; }
+    .difficulty-filters {
+      display: inline-block;
+      margin-left: 1rem;
+    }
+    .difficulty-filters label {
+      margin-right: 0.5rem;
+    }
+    #confirmation-message {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: green;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+        z-index: 1000;
+        display: none;
+    }
   </style>
 </head>
 <body data-theme="light">
@@ -53,6 +73,11 @@
       <option value="desc">Tiempo descendente</option>
     </select>
     <label><input type="checkbox" id="favoritesOnly"> Solo favoritas</label>
+    <div class="difficulty-filters">
+        <label><input type="checkbox" name="dificultad" value="Fácil"> Fácil</label>
+        <label><input type="checkbox" name="dificultad" value="Media"> Media</label>
+        <label><input type="checkbox" name="dificultad" value="Difícil"> Difícil</label>
+    </div>
     <button id="themeToggle">🌙</button>
   </div>
 
@@ -110,8 +135,10 @@
       <div id="modalBody"></div>
     </div>
   </div>
+  
+  <div id="confirmation-message">Receta añadida con éxito.</div>
 
-  <script defer>
+  <script>
     const recetasEstaticas = [
       { categoria: 'aperitivos', titulo: 'Tortilla Española', img: 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Tortilla_de_patatas.jpg', descripcion: 'Tortilla de patatas clásica con cebolla.', ingredientes: ['4 huevos','500 g de patatas','1 cebolla','Aceite','Sal'], instrucciones: ['Pelar y cortar patatas y cebolla','Freír a fuego medio','Batir los huevos','Mezclar con patata y cuajar','Servir caliente'], tiempo: 30, dificultad: 'Media', fav: false },
       { categoria: 'aperitivos', titulo: 'Boquerones en Vinagre', img: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Boquerones_en_vinagre.jpg', descripcion: 'Boquerones frescos marinados en vinagre.', ingredientes: ['500 g de boquerones','250 ml de vinagre','2 dientes de ajo','Perejil','Aceite','Sal'], instrucciones: ['Limpiar boquerones','Marinar en vinagre 1h','Escurrir','Aliñar con ajo picado y perejil','Añadir aceite'], tiempo: 60, dificultad: 'Fácil', fav: false },
@@ -170,7 +197,7 @@
       { categoria: 'postre', titulo: 'Natillas Caseras', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Natillas_con_galleta.jpg/800px-Natillas_con_galleta.jpg', descripcion: 'Clásicas natillas de huevo y leche con galleta.', ingredientes: ['1 litro de leche','5 yemas de huevo','150 g de azúcar','40 g de maicena','Canela en rama','Corteza de limón','Galletas María'], instrucciones: ['Calentar la leche con canela y limón','Mezclar yemas, azúcar y maicena','Incorporar la leche y cocer a fuego lento','Servir con una galleta por encima'], tiempo: 35, dificultad: 'Media', fav: false },
       { categoria: 'postre', titulo: 'Pestiños de Miel', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Pesti%C3%B1os_de_miel.jpg/800px-Pesti%C3%B1os_de_miel.jpg', descripcion: 'Dulce frito con forma de lazo bañado en miel.', ingredientes: ['250 g de harina','50 ml de aceite de oliva','Anís','Ajonjolí','Miel','Aceite para freír'], instrucciones: ['Hacer una masa con la harina, aceite, anís y ajonjolí','Formar lazos y freír','Bañar en miel caliente'], tiempo: 45, dificultad: 'Media', fav: false },
       { categoria: 'postre', titulo: 'Brazo de Gitano de Nata', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Brazo_de_gitano.jpg/800px-Brazo_de_gitano.jpg', descripcion: 'Pastel enrollado de bizcocho genovés relleno de nata montada.', ingredientes: ['4 huevos','120 g de azúcar','120 g de harina','250 ml de nata para montar','Azúcar glas'], instrucciones: ['Hacer el bizcocho y extenderlo en una bandeja','Montar la nata con azúcar','Untar la nata sobre el bizcocho y enrollar','Decorar con azúcar glas'], tiempo: 60, dificultad: 'Media', fav: false },
-      { categoria: 'postre', titulo: 'Quesada Pasiega', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Quesada_pasiega.jpg/800px-Quesada_pasiega.jpg', descripcion: 'Postre de Cantabria a base de cuajada, mantequilla y limón.', ingredientes: ['500 g de queso fresco o cuajada','150 g de azúcar','100 g de harina','3 huevos','70 g de mantequilla','Ralladura de limón'], instrucciones: ['Mezclar todos los ingredientes con batidora','Verter la mezcla en un molde','Hornear a 180°C durante 40 minutos'], tiempo: 50, dificultad: 'Fácil', fav: false },
+      { categoria: 'postre', titulo: 'Quesada Pasiega', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Quesada_pasiega.jpg/800px-Quesada_pasiega.jpg', descripcion: 'Postre de Cantabria a base de cuajada, mantequilla y limón.', ingredientes: ['500 g de queso fresco o cuajada','150 g de azúcar','100 g de harina','3 huevos','70 g de mantequilla','Ralladura de limón'], instrucciones: ['Mezclar todos los ingredientes con batidora','Verter la mezcla en un molde','Hornear a 180°C durante 40 minutos','Servir frío'], tiempo: 50, dificultad: 'Fácil', fav: false },
       { categoria: 'postre', titulo: 'Tarta de la Abuela', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Tarta_de_la_abuela.jpg/800px-Tarta_de_la_abuela.jpg', descripcion: 'Postre con capas de galletas, crema pastelera y chocolate.', ingredientes: ['Galletas','Crema pastelera','Chocolate de postres','Leche','Azúcar'], instrucciones: ['Mojar las galletas en leche y colocarlas como base','Alternar capas de galletas, crema y chocolate','Dejar enfriar en la nevera por varias horas'], tiempo: 45, dificultad: 'Fácil', fav: false },
       { categoria: 'postre', titulo: 'Buñuelos de Viento', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Buñuelos_de_viento.jpg/800px-Buñuelos_de_viento.jpg', descripcion: 'Bollos fritos de masa ligera, espolvoreados con azúcar.', ingredientes: ['125 g de harina','125 ml de agua','50 g de mantequilla','3 huevos','Azúcar','Aceite para freír'], instrucciones: ['Hacer una masa choux con agua, mantequilla y harina','Añadir los huevos de uno en uno','Freír la masa en aceite caliente','Rebozar en azúcar'], tiempo: 30, dificultad: 'Media', fav: false },
       { categoria: 'postre', titulo: 'Hojaldre con Crema', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Hojaldre_con_crema.jpg/800px-Hojaldre_con_crema.jpg', descripcion: 'Milhojas de hojaldre rellenas de crema pastelera.', ingredientes: ['1 lámina de hojaldre','Crema pastelera','Azúcar glas'], instrucciones: ['Cortar el hojaldre en rectángulos','Hornear hasta que suban y estén dorados','Abrir por la mitad y rellenar de crema','Espolvorear con azúcar glas'], tiempo: 40, dificultad: 'Media', fav: false },
@@ -195,7 +222,20 @@
         'postre': document.getElementById('contenedor-postre')
       };
       const modal = document.getElementById('modal'), modalBody = document.getElementById('modalBody');
+      
+      // Cerrar el modal con el botón de la X, haciendo clic fuera, o con la tecla Esc
       document.querySelector('#modal .close').onclick = () => modal.style.display = 'none';
+      modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+              modal.style.display = 'none';
+          }
+      });
+      document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal.style.display === 'flex') {
+              modal.style.display = 'none';
+          }
+      });
+
       document.getElementById('themeToggle').onclick = () => {
         const b = document.body;
         b.dataset.theme = b.dataset.theme === 'light' ? 'dark' : 'light';
@@ -267,6 +307,8 @@
         const sortv = document.getElementById('sort').value;
         const favsOnly = document.getElementById('favoritesOnly').checked;
         const activeTab = document.querySelector('.tab-button.active').dataset.tab;
+        
+        const selectedDifficulties = Array.from(document.querySelectorAll('input[name="dificultad"]:checked')).map(checkbox => checkbox.value);
 
         let visibleCards = [...allCards];
 
@@ -278,6 +320,10 @@
           visibleCards = visibleCards.filter(card => card.dataset.title.toLowerCase().includes(term) || card.querySelector('p').textContent.toLowerCase().includes(term));
         }
 
+        if (selectedDifficulties.length > 0) {
+            visibleCards = visibleCards.filter(card => selectedDifficulties.includes(allRecetas.find(r => r.titulo === card.dataset.title).dificultad));
+        }
+
         if (sortv === 'asc') {
           visibleCards.sort((a, b) => a.dataset.tiempo - b.dataset.tiempo);
         }
@@ -286,9 +332,17 @@
         }
 
         allCards.forEach(card => {
-          const isVisible = visibleCards.includes(card) && card.dataset.categoria === activeTab;
+          const isVisible = visibleCards.includes(card) && (activeTab === 'add-recipe' || card.dataset.categoria === activeTab);
           card.style.display = isVisible ? 'block' : 'none';
         });
+        
+        if (activeTab !== 'add-recipe') {
+            Object.values(cont).forEach(container => container.style.display = 'none');
+            const currentContainer = cont[activeTab];
+            if (currentContainer) {
+              currentContainer.style.display = 'grid';
+            }
+        }
       }
 
       function showTab(tabName) {
@@ -304,17 +358,7 @@
         });
         render();
       }
-
-      ['search', 'sort', 'favoritesOnly'].forEach(id =>
-        document.getElementById(id).addEventListener('input', render)
-      );
-
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', () => {
-          showTab(button.dataset.tab);
-        });
-      });
-
+      
       const recipeForm = document.getElementById('recipe-form');
       if (recipeForm) {
         recipeForm.addEventListener('submit', (e) => {
@@ -329,7 +373,8 @@
             instrucciones: document.getElementById('instrucciones').value.split(',').map(s => s.trim()),
             tiempo: parseInt(document.getElementById('tiempo').value),
             dificultad: document.getElementById('dificultad').value,
-            fav: false
+            fav: false,
+            isUserAdded: true // Nueva propiedad para identificar las recetas de usuario
           };
 
           allRecetas.push(newRecipe);
@@ -337,13 +382,35 @@
           createAllCards();
           showTab(newRecipe.categoria);
           recipeForm.reset();
+          
+          const confirmationMessage = document.getElementById('confirmation-message');
+          confirmationMessage.style.display = 'block';
+          setTimeout(() => {
+              confirmationMessage.style.display = 'none';
+          }, 3000); // El mensaje se oculta después de 3 segundos
         });
       }
 
       function saveUserRecetas() {
-        const userRecetas = allRecetas.filter(r => !recetasEstaticas.includes(r));
+        const userRecetas = allRecetas.filter(r => r.isUserAdded);
         localStorage.setItem('userRecetas', JSON.stringify(userRecetas));
       }
+
+      // Event Listeners para filtros
+      ['search', 'sort', 'favoritesOnly'].forEach(id =>
+        document.getElementById(id).addEventListener('input', render)
+      );
+      
+      document.querySelectorAll('input[name="dificultad"]').forEach(checkbox => {
+          checkbox.addEventListener('change', render);
+      });
+
+      // Event Listeners para pestañas
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+          showTab(button.dataset.tab);
+        });
+      });
 
       createAllCards();
       render();
