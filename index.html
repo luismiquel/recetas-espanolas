@@ -26,7 +26,6 @@
     .star.fav { color:#e74c3c; }
     .receta-actions { position:absolute; bottom:8px; right:8px; display:none; }
     .receta:hover .receta-actions { display:block; }
-    .receta-actions button { background:var(--primary); color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
     .receta:hover {
       transform: translateY(-5px);
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -59,6 +58,16 @@
         z-index: 1000;
         display: none;
     }
+    #receta-del-dia {
+        padding: 2rem;
+        background: #fdf6e3;
+        color: #555;
+        text-align: center;
+        border-bottom: 2px solid #ddd;
+    }
+    #receta-del-dia h2 {
+        color: #d62828;
+    }
   </style>
 </head>
 <body data-theme="light">
@@ -66,6 +75,10 @@
     <h1>Recetas de Cocina Española</h1>
     <p>Auténticas recetas organizadas por tiempos de comida</p>
   </header>
+  <div id="receta-del-dia">
+    <h2>Receta del Día</h2>
+    <div class="grid" id="contenedor-receta-del-dia"></div>
+  </div>
   <div class="tabs">
     <button class="tab-button active" data-tab="aperitivos">Aperitivos</button>
     <button class="tab-button" data-tab="primer-plato">Primer Plato</button>
@@ -412,6 +425,7 @@
             button.classList.add('active');
           }
         });
+        document.getElementById('receta-del-dia').style.display = tabName === 'add-recipe' ? 'none' : 'block';
         render();
       }
 
@@ -451,6 +465,23 @@
         const userRecetas = allRecetas.filter(r => r.isUserAdded);
         localStorage.setItem('userRecetas', JSON.stringify(userRecetas));
       }
+      
+      function displayDailyRecipe() {
+          const randomIndex = Math.floor(Math.random() * recetasEstaticas.length);
+          const dailyRecipe = recetasEstaticas[randomIndex];
+          const container = document.getElementById('contenedor-receta-del-dia');
+          container.innerHTML = '';
+          
+          const card = document.createElement('div');
+          card.className = 'receta';
+          card.innerHTML = `
+              <h3>${dailyRecipe.titulo}</h3>
+              <img src="${dailyRecipe.img}" alt="${dailyRecipe.titulo}">
+              <p><strong>Descripción:</strong> ${dailyRecipe.descripcion}</p>
+              <p class="info">⏱ ${dailyRecipe.tiempo} min | 🔥 ${dailyRecipe.dificultad}</p>
+          `;
+          container.appendChild(card);
+      }
 
       ['search', 'sort', 'favoritesOnly', 'ingredientSearch'].forEach(id =>
         document.getElementById(id).addEventListener('input', render)
@@ -467,6 +498,7 @@
       });
 
       createAllCards();
+      displayDailyRecipe();
       render();
     });
   </script>
