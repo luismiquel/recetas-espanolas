@@ -27,6 +27,11 @@
     .receta-actions { position:absolute; bottom:8px; right:8px; display:none; }
     .receta:hover .receta-actions { display:block; }
     .receta-actions button { background:var(--primary); color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
+    .receta:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
     #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
     #modal .content { background:white; padding:2rem; border-radius:8px; max-width:500px; width:90%; position:relative; }
     #modal .close { position:absolute; top:10px; right:10px; cursor:pointer; font-size:1.5rem; }
@@ -70,6 +75,7 @@
   </div>
   <div class="controls">
     <input type="text" id="search" placeholder="Buscar recetas...">
+    <input type="text" id="ingredientSearch" placeholder="Buscar por ingredientes...">
     <select id="sort">
       <option value="">Ordenar por tiempo</option>
       <option value="asc">Tiempo ascendente</option>
@@ -214,7 +220,17 @@
       { categoria: 'segundo-plato', titulo: 'Pescado en Adobo', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cazon_en_adobo.jpg/800px-Cazon_en_adobo.jpg', descripcion: 'Trozos de pescado marinados en adobo y fritos.', ingredientes: ['500 g de cazón o pescado blanco','Vinagre','Ajo','Pimentón','Orégano','Comino','Harina','Aceite'], instrucciones: ['Marinar el pescado en la mezcla de vinagre, ajo y especias','Dejar reposar por unas horas','Rebozar en harina y freír en aceite caliente'], tiempo: 120, dificultad: 'Media', fav: false },
       { categoria: 'segundo-plato', titulo: 'Bacalao al Pil Pil', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Bacalao_al_pil_pil.jpg/800px-Bacalao_al_pil_pil.jpg', descripcion: 'Bacalao en salsa de aceite, ajo y guindilla, emulsionada al fuego.', ingredientes: ['4 lomos de bacalao desalado','Aceite de oliva','Ajo','Guindilla'], instrucciones: ['Confitar el ajo y la guindilla','Añadir el bacalao con la piel hacia abajo','Mover la cazuela para emulsionar la salsa','Servir muy caliente'], tiempo: 40, dificultad: 'Difícil', fav: false },
       { categoria: 'postre', titulo: 'Mazapán', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Mazapán.jpg/800px-Mazapán.jpg', descripcion: 'Dulce navideño a base de almendra molida y azúcar.', ingredientes: ['200 g de almendra molida','200 g de azúcar','50 ml de agua'], instrucciones: ['Hacer un almíbar con el agua y el azúcar','Añadir la almendra y mezclar bien','Dejar enfriar y amasar','Dar forma y hornear suavemente'], tiempo: 30, dificultad: 'Media', fav: false },
-      { categoria: 'postre', titulo: 'Hojuelas de Miel', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hojuelas_con_miel.jpg/800px-Hojuelas_con_miel.jpg', descripcion: 'Dulce frito de masa muy fina bañado en miel.', ingredientes: ['200 g de harina','2 huevos','Aceite de oliva','Miel','Agua','Sal'], instrucciones: ['Hacer una masa con harina, huevos, aceite y agua','Estirar la masa muy fina y cortar en trozos','Freír en aceite caliente','Bañar en miel y servir'], tiempo: 45, dificultad: 'Media', fav: false }
+      { categoria: 'postre', titulo: 'Hojuelas de Miel', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hojuelas_con_miel.jpg/800px-Hojuelas_con_miel.jpg', descripcion: 'Dulce frito de masa muy fina bañado en miel.', ingredientes: ['200 g de harina','2 huevos','Aceite de oliva','Miel','Agua','Sal'], instrucciones: ['Hacer una masa con harina, huevos, aceite y agua','Estirar la masa muy fina y cortar en trozos','Freír en aceite caliente','Bañar en miel y servir'], tiempo: 45, dificultad: 'Media', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Carne con Tomate', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Carne_con_tomate.jpg/800px-Carne_con_tomate.jpg', descripcion: 'Guiso de carne de cerdo en una salsa de tomate casera.', ingredientes: ['1 kg de carne de cerdo','1 kg de tomates maduros','1 cebolla','1 pimiento','Vino blanco','Aceite de oliva'], instrucciones: ['Cortar la carne en dados y dorarla','Sofreír la cebolla y el pimiento','Añadir el tomate triturado y el vino','Incorporar la carne y cocer a fuego lento'], tiempo: 90, dificultad: 'Media', fav: false },
+      { categoria: 'primer-plato', titulo: 'Sopa Castellana', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Sopa_de_ajo_2.jpg/800px-Sopa_de_ajo_2.jpg', descripcion: 'Sopa de pan, ajo, pimentón y huevo, muy tradicional en Castilla.', ingredientes: ['100g de pan duro','4 dientes de ajo','1 cucharada de pimentón','Caldo de jamón','4 huevos','Aceite de oliva'], instrucciones: ['Sofreír el ajo y el pan en aceite','Añadir pimentón y el caldo','Cocer a fuego lento','Escalfar los huevos en la sopa'], tiempo: 25, dificultad: 'Fácil', fav: false },
+      { categoria: 'aperitivos', titulo: 'Setas al Ajillo', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Setas_al_ajillo.jpg/800px-Setas_al_ajillo.jpg', descripcion: 'Setas salteadas con ajo y guindilla.', ingredientes: ['500g de setas','4 dientes de ajo','1 guindilla','Perejil','Vino blanco','Aceite de oliva'], instrucciones: ['Laminar las setas y el ajo','Freír el ajo y la guindilla','Añadir las setas y el vino','Cocer y espolvorear con perejil'], tiempo: 20, dificultad: 'Fácil', fav: false },
+      { categoria: 'postre', titulo: 'Tarta de Queso', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Tarta_de_queso_casera.jpg/800px-Tarta_de_queso_casera.jpg', descripcion: 'Clásica tarta de queso al horno, cremosa y deliciosa.', ingredientes: ['500g de queso crema','250g de azúcar','4 huevos','200ml de nata','1 cucharada de harina'], instrucciones: ['Mezclar todos los ingredientes con batidora','Verter la mezcla en un molde','Hornear a 200°C durante 40-50 minutos','Dejar enfriar antes de servir'], tiempo: 60, dificultad: 'Media', fav: false },
+      { categoria: 'primer-plato', titulo: 'Crema de Verduras', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Crema_de_verduras.jpg/800px-Crema_de_verduras.jpg', descripcion: 'Crema ligera de varias verduras, ideal para la cena.', ingredientes: ['1 patata','1 puerro','2 zanahorias','1 calabacín','Caldo de verduras','Aceite de oliva'], instrucciones: ['Picar las verduras y cocerlas en el caldo','Triturar todo hasta que quede una crema fina','Aliñar con aceite y servir'], tiempo: 35, dificultad: 'Fácil', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Pimientos Rellenos', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Pimientos_rellenos.jpg/800px-Pimientos_rellenos.jpg', descripcion: 'Pimientos del piquillo rellenos de carne o marisco, con salsa.', ingredientes: ['Pimientos del piquillo','Carne picada','Cebolla','Harina','Vino','Caldo','Tomate'], instrucciones: ['Preparar el relleno de carne picada y cebolla','Rellenar los pimientos','Hacer una salsa de pimientos','Cocinar todo junto'], tiempo: 60, dificultad: 'Media', fav: false },
+      { categoria: 'postre', titulo: 'Natillas con Galleta', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Natillas_con_galleta.jpg/800px-Natillas_con_galleta.jpg', descripcion: 'Postre clásico de huevo y leche con galletas en la base.', ingredientes: ['1 litro de leche','6 yemas','150g de azúcar','Galletas','Canela','Corteza de limón'], instrucciones: ['Calentar la leche con canela y limón','Mezclar yemas con azúcar','Verter la leche y cocer sin que hierva','Servir en cuencos con una galleta'], tiempo: 35, dificultad: 'Fácil', fav: false },
+      { categoria: 'primer-plato', titulo: 'Ensalada Mixta', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Ensalada_mixta_con_atún.jpg/800px-Ensalada_mixta_con_atún.jpg', descripcion: 'Ensalada fresca y variada con lechuga, tomate, atún, cebolla y huevo.', ingredientes: ['Lechuga','Tomate','Cebolla','Atún','Huevo duro','Aceitunas','Aceite','Vinagre'], instrucciones: ['Cortar las verduras','Mezclar todos los ingredientes','Aliñar al gusto y servir'], tiempo: 10, dificultad: 'Fácil', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Conejo a la Cazadora', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Conejo_a_la_cazadora.jpg/800px-Conejo_a_la_cazadora.jpg', descripcion: 'Guiso de conejo con setas y vino tinto.', ingredientes: ['1 conejo troceado','200g de setas','1 cebolla','Vino tinto','Caldo de carne','Aceite'], instrucciones: ['Dorar el conejo en aceite','Sofreír la cebolla y las setas','Añadir el conejo, el vino y el caldo','Cocer a fuego lento'], tiempo: 75, dificultad: 'Media', fav: false },
+      { categoria: 'postre', titulo: 'Higos al Horno', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Higos_al_horno_con_miel.jpg/800px-Higos_al_horno_con_miel.jpg', descripcion: 'Higos horneados con miel y un toque de canela.', ingredientes: ['12 higos frescos','Miel','Canela'], instrucciones: ['Cortar los higos y colocar en una bandeja','Rociar con miel y canela','Hornear a 180°C durante 15 minutos'], tiempo: 20, dificultad: 'Fácil', fav: false }
     ];
 
     let allRecetas = [];
@@ -297,6 +313,7 @@
           card.dataset.tiempo = receta.tiempo;
           card.dataset.categoria = receta.categoria;
           card.dataset.title = receta.titulo;
+          card.dataset.ingredientes = receta.ingredientes.join(' ').toLowerCase();
           if (receta.isUserAdded) {
             card.dataset.isUserAdded = true;
           }
@@ -338,6 +355,7 @@
 
       function render() {
         const term = document.getElementById('search').value.toLowerCase();
+        const ingredientTerm = document.getElementById('ingredientSearch').value.toLowerCase().split(',').map(s => s.trim()).filter(s => s);
         const sortv = document.getElementById('sort').value;
         const favsOnly = document.getElementById('favoritesOnly').checked;
         const activeTab = document.querySelector('.tab-button.active').dataset.tab;
@@ -352,6 +370,10 @@
 
         if (term) {
           visibleCards = visibleCards.filter(card => card.dataset.title.toLowerCase().includes(term) || card.querySelector('p').textContent.toLowerCase().includes(term));
+        }
+
+        if (ingredientTerm.length > 0) {
+            visibleCards = visibleCards.filter(card => ingredientTerm.every(ing => card.dataset.ingredientes.includes(ing)));
         }
 
         if (selectedDifficulties.length > 0) {
@@ -430,7 +452,7 @@
         localStorage.setItem('userRecetas', JSON.stringify(userRecetas));
       }
 
-      ['search', 'sort', 'favoritesOnly'].forEach(id =>
+      ['search', 'sort', 'favoritesOnly', 'ingredientSearch'].forEach(id =>
         document.getElementById(id).addEventListener('input', render)
       );
       
