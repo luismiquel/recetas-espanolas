@@ -24,6 +24,9 @@
     .info { font-size:1rem; font-weight:bold; color:var(--fg); margin-top:.5rem; }
     .star { position:absolute; top:8px; right:8px; font-size:1.5rem; cursor:pointer; color:#ccc; }
     .star.fav { color:#e74c3c; }
+    .receta-actions { position:absolute; bottom:8px; right:8px; display:none; }
+    .receta:hover .receta-actions { display:block; }
+    .receta-actions button { background:var(--primary); color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
     #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
     #modal .content { background:white; padding:2rem; border-radius:8px; max-width:500px; width:90%; position:relative; }
     #modal .close { position:absolute; top:10px; right:10px; cursor:pointer; font-size:1.5rem; }
@@ -201,7 +204,17 @@
       { categoria: 'postre', titulo: 'Tarta de la Abuela', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Tarta_de_la_abuela.jpg/800px-Tarta_de_la_abuela.jpg', descripcion: 'Postre con capas de galletas, crema pastelera y chocolate.', ingredientes: ['Galletas','Crema pastelera','Chocolate de postres','Leche','Azúcar'], instrucciones: ['Mojar las galletas en leche y colocarlas como base','Alternar capas de galletas, crema y chocolate','Dejar enfriar en la nevera por varias horas'], tiempo: 45, dificultad: 'Fácil', fav: false },
       { categoria: 'postre', titulo: 'Buñuelos de Viento', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Buñuelos_de_viento.jpg/800px-Buñuelos_de_viento.jpg', descripcion: 'Bollos fritos de masa ligera, espolvoreados con azúcar.', ingredientes: ['125 g de harina','125 ml de agua','50 g de mantequilla','3 huevos','Azúcar','Aceite para freír'], instrucciones: ['Hacer una masa choux con agua, mantequilla y harina','Añadir los huevos de uno en uno','Freír la masa en aceite caliente','Rebozar en azúcar'], tiempo: 30, dificultad: 'Media', fav: false },
       { categoria: 'postre', titulo: 'Hojaldre con Crema', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Hojaldre_con_crema.jpg/800px-Hojaldre_con_crema.jpg', descripcion: 'Milhojas de hojaldre rellenas de crema pastelera.', ingredientes: ['1 lámina de hojaldre','Crema pastelera','Azúcar glas'], instrucciones: ['Cortar el hojaldre en rectángulos','Hornear hasta que suban y estén dorados','Abrir por la mitad y rellenar de crema','Espolvorear con azúcar glas'], tiempo: 40, dificultad: 'Media', fav: false },
-      { categoria: 'postre', titulo: 'Gachas Manchegas Dulces', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Gachas_dulces_españolas.jpg/800px-Gachas_dulces_españolas.jpg', descripcion: 'Postre a base de harina, leche, anís y canela, típico de La Mancha.', ingredientes: ['100 g de harina','1 litro de leche','Azúcar','Aceite','Anís en grano','Pan frito','Canela'], instrucciones: ['Sofreír el pan y el anís','Retirar el pan y añadir la harina a la sartén','Añadir la leche y el azúcar','Cocer sin dejar de remover','Servir con pan frito y canela'], tiempo: 30, dificultad: 'Fácil', fav: false }
+      { categoria: 'postre', titulo: 'Gachas Manchegas Dulces', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Gachas_dulces_españolas.jpg/800px-Gachas_dulces_españolas.jpg', descripcion: 'Postre a base de harina, leche, anís y canela, típico de La Mancha.', ingredientes: ['100 g de harina','1 litro de leche','Azúcar','Aceite','Anís en grano','Pan frito','Canela'], instrucciones: ['Sofreír el pan y el anís','Retirar el pan y añadir la harina a la sartén','Añadir la leche y el azúcar','Cocer sin dejar de remover','Servir con pan frito y canela'], tiempo: 30, dificultad: 'Fácil', fav: false },
+      { categoria: 'aperitivos', titulo: 'Espetos de Sardinas', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Espetos_de_sardinas.jpg/800px-Espetos_de_sardinas.jpg', descripcion: 'Sardinas ensartadas en cañas y asadas al fuego en la arena.', ingredientes: ['12 sardinas frescas','Sal gorda','Aceite de oliva','Limón','Cañas para espetar'], instrucciones: ['Limpiar y salar las sardinas','Ensartarlas en las cañas','Asarlas a la brasa hasta que estén doradas','Servir con limón'], tiempo: 20, dificultad: 'Media', fav: false },
+      { categoria: 'aperitivos', titulo: 'Pipirrana', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Pipirrana_de_Jaen.jpg/800px-Pipirrana_de_Jaen.jpg', descripcion: 'Ensalada andaluza de tomate, pimiento, cebolla, pepino y huevo.', ingredientes: ['4 tomates','2 pimientos verdes','1 cebolla','1 pepino','2 huevos duros','Aceite de oliva','Vinagre','Sal'], instrucciones: ['Picar las verduras en dados pequeños','Trocear el huevo duro','Mezclar todo y aliñar','Servir fría'], tiempo: 20, dificultad: 'Fácil', fav: false },
+      { categoria: 'primer-plato', titulo: 'Sopa de Cocido', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Sopa_de_cocido.jpg/800px-Sopa_de_cocido.jpg', descripcion: 'Sopa de fideos preparada con el caldo del cocido.', ingredientes: ['Caldo de cocido','Fideos de cocido'], instrucciones: ['Colar el caldo del cocido','Hervirlo y añadir los fideos','Cocer hasta que los fideos estén listos'], tiempo: 15, dificultad: 'Fácil', fav: false },
+      { categoria: 'primer-plato', titulo: 'Garbanzos con Espinacas', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Garbanzos_con_espinacas.jpg/800px-Garbanzos_con_espinacas.jpg', descripcion: 'Guiso de garbanzos con espinacas y un sofrito de ajo y pimentón.', ingredientes: ['500 g de garbanzos cocidos','Espinacas','Ajo','Pimentón','Aceite','Pan frito','Comino'], instrucciones: ['Sofreír el ajo','Añadir las espinacas y los garbanzos','Machacar el pan frito con comino y añadirlo','Cocer todo a fuego lento'], tiempo: 40, dificultad: 'Media', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Lubina a la Sal', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Lubina_a_la_sal.jpg/800px-Lubina_a_la_sal.jpg', descripcion: 'Lubina entera cocinada al horno cubierta de sal gorda.', ingredientes: ['1 lubina de 1 kg','2 kg de sal gorda','Claras de huevo','Aceite de oliva','Limón'], instrucciones: ['Mezclar la sal con claras de huevo para compactar','Cubrir la lubina con la mezcla de sal','Hornear a 200°C durante 25-30 minutos','Romper la costra de sal y servir'], tiempo: 45, dificultad: 'Media', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Arroz al Horno', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Arros_al_forn.jpg/800px-Arros_al_forn.jpg', descripcion: 'Arroz con costillas, morcilla, garbanzos y tomate, cocinado en cazuela de barro.', ingredientes: ['400 g de arroz','300 g de costillas de cerdo','2 morcillas','100 g de garbanzos','Tomate triturado','Ajo','Pimentón','Caldo','Aceite'], instrucciones: ['Sofreír las costillas y morcillas','Añadir el ajo, el tomate y el pimentón','Mezclar con el arroz, garbanzos y caldo','Hornear hasta que el arroz esté cocido'], tiempo: 60, dificultad: 'Media', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Pescado en Adobo', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cazon_en_adobo.jpg/800px-Cazon_en_adobo.jpg', descripcion: 'Trozos de pescado marinados en adobo y fritos.', ingredientes: ['500 g de cazón o pescado blanco','Vinagre','Ajo','Pimentón','Orégano','Comino','Harina','Aceite'], instrucciones: ['Marinar el pescado en la mezcla de vinagre, ajo y especias','Dejar reposar por unas horas','Rebozar en harina y freír en aceite caliente'], tiempo: 120, dificultad: 'Media', fav: false },
+      { categoria: 'segundo-plato', titulo: 'Bacalao al Pil Pil', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Bacalao_al_pil_pil.jpg/800px-Bacalao_al_pil_pil.jpg', descripcion: 'Bacalao en salsa de aceite, ajo y guindilla, emulsionada al fuego.', ingredientes: ['4 lomos de bacalao desalado','Aceite de oliva','Ajo','Guindilla'], instrucciones: ['Confitar el ajo y la guindilla','Añadir el bacalao con la piel hacia abajo','Mover la cazuela para emulsionar la salsa','Servir muy caliente'], tiempo: 40, dificultad: 'Difícil', fav: false },
+      { categoria: 'postre', titulo: 'Mazapán', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Mazapán.jpg/800px-Mazapán.jpg', descripcion: 'Dulce navideño a base de almendra molida y azúcar.', ingredientes: ['200 g de almendra molida','200 g de azúcar','50 ml de agua'], instrucciones: ['Hacer un almíbar con el agua y el azúcar','Añadir la almendra y mezclar bien','Dejar enfriar y amasar','Dar forma y hornear suavemente'], tiempo: 30, dificultad: 'Media', fav: false },
+      { categoria: 'postre', titulo: 'Hojuelas de Miel', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hojuelas_con_miel.jpg/800px-Hojuelas_con_miel.jpg', descripcion: 'Dulce frito de masa muy fina bañado en miel.', ingredientes: ['200 g de harina','2 huevos','Aceite de oliva','Miel','Agua','Sal'], instrucciones: ['Hacer una masa con harina, huevos, aceite y agua','Estirar la masa muy fina y cortar en trozos','Freír en aceite caliente','Bañar en miel y servir'], tiempo: 45, dificultad: 'Media', fav: false }
     ];
 
     let allRecetas = [];
@@ -223,7 +236,6 @@
       };
       const modal = document.getElementById('modal'), modalBody = document.getElementById('modalBody');
       
-      // Cerrar el modal con el botón de la X, haciendo clic fuera, o con la tecla Esc
       document.querySelector('#modal .close').onclick = () => modal.style.display = 'none';
       modal.addEventListener('click', (e) => {
           if (e.target === modal) {
@@ -259,6 +271,19 @@
           render();
         }
       }
+      
+      function handleDeleteClick(e) {
+        e.stopPropagation();
+        const card = e.currentTarget.closest('.receta');
+        const title = card.dataset.title;
+        
+        if (confirm(`¿Estás seguro de que quieres borrar la receta "${title}"?`)) {
+          allRecetas = allRecetas.filter(r => r.titulo !== title);
+          saveUserRecetas();
+          createAllCards();
+          render();
+        }
+      }
 
       const allCards = [];
 
@@ -272,6 +297,9 @@
           card.dataset.tiempo = receta.tiempo;
           card.dataset.categoria = receta.categoria;
           card.dataset.title = receta.titulo;
+          if (receta.isUserAdded) {
+            card.dataset.isUserAdded = true;
+          }
 
           const ing = `<ul>${receta.ingredientes.map(i => `<li>${i}</li>`).join('')}</ul>`;
           const pas = `<ol>${receta.instrucciones.map(p => `<li>${p}</li>`).join('')}</ol>`;
@@ -284,6 +312,7 @@
             <p><strong>Ingredientes:</strong>${ing}</p>
             <p><strong>Instrucciones:</strong>${pas}</p>
             <p class="info">⏱ ${receta.tiempo} min | 🔥 ${receta.dificultad}</p>
+            ${receta.isUserAdded ? `<div class="receta-actions"><button class="delete-btn">Borrar</button></div>` : ''}
           `;
           
           card.onclick = () => {
@@ -294,6 +323,11 @@
           };
 
           card.querySelector('.star').onclick = handleFavClick;
+          
+          if (receta.isUserAdded) {
+              card.querySelector('.delete-btn').onclick = handleDeleteClick;
+          }
+
           allCards.push(card);
         });
 
@@ -344,7 +378,7 @@
             }
         }
       }
-
+      
       function showTab(tabName) {
         document.querySelectorAll('section').forEach(section => {
           section.classList.remove('active');
@@ -358,7 +392,7 @@
         });
         render();
       }
-      
+
       const recipeForm = document.getElementById('recipe-form');
       if (recipeForm) {
         recipeForm.addEventListener('submit', (e) => {
@@ -374,7 +408,7 @@
             tiempo: parseInt(document.getElementById('tiempo').value),
             dificultad: document.getElementById('dificultad').value,
             fav: false,
-            isUserAdded: true // Nueva propiedad para identificar las recetas de usuario
+            isUserAdded: true
           };
 
           allRecetas.push(newRecipe);
@@ -387,7 +421,7 @@
           confirmationMessage.style.display = 'block';
           setTimeout(() => {
               confirmationMessage.style.display = 'none';
-          }, 3000); // El mensaje se oculta después de 3 segundos
+          }, 3000);
         });
       }
 
@@ -396,7 +430,6 @@
         localStorage.setItem('userRecetas', JSON.stringify(userRecetas));
       }
 
-      // Event Listeners para filtros
       ['search', 'sort', 'favoritesOnly'].forEach(id =>
         document.getElementById(id).addEventListener('input', render)
       );
@@ -405,7 +438,6 @@
           checkbox.addEventListener('change', render);
       });
 
-      // Event Listeners para pestañas
       document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', () => {
           showTab(button.dataset.tab);
