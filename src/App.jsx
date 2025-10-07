@@ -145,7 +145,15 @@ function App() {
                     />
                     <div className="flex flex-wrap justify-center md:space-x-2 space-x-1 mt-4 md:mt-0">
                         {categorias.map(cat => (
-                            <button key={cat} onClick={() => { setFiltroCategoria(cat); setFiltroDificultad('Todas'); }} className={`px-3 py-1 rounded-md text-sm transition-colors duration-200 ${ (filtroCategoria === cat && cat !== 'Favoritas') ? 'bg-indigo-600 text-white shadow-lg' : filtroCategoria === 'Favoritas' && cat === 'Favoritas' ? 'bg-pink-600 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600' }`}>
+                            <button
+                                key={cat}
+                                onClick={() => { setFiltroCategoria(cat); setFiltroDificultad('Todas'); }}
+                                className={`px-3 py-1 rounded-md text-sm transition-colors duration-200 ${
+                                    (filtroCategoria === cat && cat !== 'Favoritas') ? 'bg-indigo-600 dark:bg-indigo-500 text-white shadow-lg' :
+                                    filtroCategoria === 'Favoritas' && cat === 'Favoritas' ? 'bg-pink-600 dark:bg-pink-500 text-white shadow-lg' :
+                                    'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+                                }`}
+                            >
                                 {cat === 'Favoritas' ? '⭐ Favoritas' : cat}
                             </button>
                         ))}
@@ -166,7 +174,10 @@ function App() {
                             {ordenAlfabetico === 'asc' ? 'A-Z ↓' : ordenAlfabetico === 'desc' ? 'Z-A ↑' : 'Ordenar'}
                         </button>
                     </div>
-                    <button onClick={handleOpenAddForm} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                    <button
+                        onClick={handleOpenAddForm}
+                        className="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-colors"
+                    >
                         Añadir Receta
                     </button>
                 </div>
